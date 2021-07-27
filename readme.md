@@ -21,7 +21,7 @@ Pastikan Node sudah terinstall di local computer sebelum melalukan step dibawah 
 10. Buka browser dan akses dari url http:\\localhost:3000
 ```
 
-## Cara engunaan
+## Cara pengunaan
 
 Untuk pengunaan bisa diakses dari POSTMAN / INSOMNIA / THUNDER CLIENT dan lainnya
 
