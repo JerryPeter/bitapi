@@ -10,9 +10,9 @@ Gunakan langkah berikut untuk installasi
 Pastikan Node sudah terinstall di local computer sebelum melalukan step dibawah ini
 
 1. Buat Database baru di MS SQL Server yang ada beri nama bitapi
-2. Buat folder kosong
-3. Ketik command berikut dari terminal :\>git clone https://github.com/JerryPeter/bitapi.git 
-4. Masuk kedalam folder bitapi yang ada :\>cd bitapi
+2. Buat folder bitapi
+3. Ketik command berikut dari terminal :\>git clone https://github.com/JerryPeter/bitapi.git . 
+4. Sekarang pada folder kita sudah ada semua script hasil cloning dari GITHUB
 5. Edit configurasi koneksi ke database pada file config\config.json
 6. Install paket npm yang diperlukan, dengan mengetikan command berikut dari terminal :\>npm install
 7. Jalankan database migration dengan command berikut dari terminal :\>npx sequelize-cli db:migrate
