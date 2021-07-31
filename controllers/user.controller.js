@@ -7,9 +7,9 @@ const bcryptjs = require("bcryptjs");
 const { User } = require('../models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
 const SALT = process.env.SALT;
 
-console.log(SALT);
 
 // --- SELECT ALL DATA ---------
 function index(req, res, next) {
@@ -128,10 +128,10 @@ function destroy(req, res, next) {
 // }
 
 
+//=================== Ini contoh SIGN UP & SIGN IN pakai bcrypt versi ASYNCH =====
 
-// --- SIGN UP / REGISTER ---------
+// ---- SignUp --
 function signup(req, res, next) {
-
     User.findOne({where:{email:req.body.email}}).then(result => {
         if (result) {
             res.status(409).json({
@@ -211,6 +211,53 @@ function signin(req, res) {
     });
 }
 
+//=================== Ini contoh REGISTER & LOGIN pakai bcrypt versi SYNCH =====
+
+
+// --- REGISTER SYNCH ---------
+function register(req, res, next) {
+    User.findOne({where:{email:req.body.email}}).then(result => {
+        if (result) {
+            res.status(409).json({
+                message: "Alamat Email sudah digunakan ...",
+            });            
+        } else {
+            // Jika Email belum digunakan        
+            var salt = bcryptjs.genSaltSync(10);    
+            var hash = bcryptjs.hashSync(req.body.password, SALT);
+            console.log(`hash ${hash}`);
+
+            const data = {
+                username : req.body.username,
+                email : req.body.email,
+                password : hash,
+                fullname : req.body.fullname,
+                bio : req.body.bio,
+                pic : req.body.pic,        
+                createdBy: req.body.createdBy,
+                updatedBy: req.body.updatedBy,
+                isDeleted:req.body.isDeleted
+            }            
+
+            User.create(data).then((result)=>{
+                res.status(201).json({
+                    message: `Register user sukses ... ${salt}`,
+                });
+            }).catch((err)=> {
+                res.status(500).json({
+                    message: `Gagal ${err}`,
+                });
+            });  
+
+        }
+    }).catch(err => {
+        res.status(500).json({
+            message: "Something went wrong ....",
+        });
+    });
+}
+
+// ---- LOGIN SYNCH -----
 function login(req, res) {
     User.findOne({where:{email : req.body.email}}).then(user => {
         if (user === null) {
@@ -222,13 +269,13 @@ function login(req, res) {
             // Jika user terdaftar didalam system
 
             // Check password dari database dengan password yang dikirim dari body.param
-            if (req.body.password == user.password){
+            if (bcryptjs.compareSync(req.body.password, user.password)){
                 // Password cocok, selanjutnya generate token berisi informasi EMAIL, USERNAME dan USERID
                 const token = jwt.sign({
                     email : user.email,
                     username: user.username,
                     userid : user.id
-                }, ACCESS_TOKEN_SCREET, function(err, token){
+                }, JWT_SECRET, function(err, token){
                     res.status(200).json({
                         message: "Authentication Sukses ...",
                         token : token
@@ -249,40 +296,6 @@ function login(req, res) {
 }
 
 
-// --- REGISTER ---------
-function register(req, res, next) {
-
-    User.findOne({where:{email:req.body.email}}).then(result => {
-        if (result) {
-            res.status(409).json({
-                message: "Alamat Email sudah digunakan ...",
-            });            
-        } else {
-            // Jika Email belum digunakan
-            
-            var salt = bcryptjs.genSaltSync(10);
-            var hash = bcryptjs.hashSync("B4c0/\/", salt);
-
-            // Load hash from your password DB.
-            var check = bcryptjs.compareSync("B4c0/\/", hash); // true
-            var check2 = bcryptjs.compareSync("not_bacon", hash); // false
-
-            
-            res.status(200).json({
-                message: "Authentication Sukses ...",
-                salt : salt,
-                hash : hash,
-                check : check,
-                check2 : check2
-            });  
-
-        }
-    }).catch(err => {
-        res.status(500).json({
-            message: "Something went wrong ...",
-        });
-    });
-}
 
 module.exports= {
     index,
