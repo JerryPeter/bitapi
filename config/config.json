@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "sa",
-    "password": "",
-    "database": "bitapi",
-    "host": "",
+    "password": "sysadmin00",
+    "database": "usermgmt",
+    "host": "JRRYPTR",
     "dialect": "mssql"
   },
   "test": {
