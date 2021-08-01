@@ -4,11 +4,14 @@ const jwt = require('jsonwebtoken');
 
 const bcryptjs = require("bcryptjs");
 
+const validator = require("fastest-validator");
+
 const { User } = require('../models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const SALT = process.env.SALT;
+
 
 
 // --- SELECT ALL DATA ---------
@@ -138,43 +141,69 @@ function signup(req, res, next) {
                 message: "Alamat Email sudah digunakan ...",
             });            
         } else {
-            // Jika Email belum digunakan
+            // Jika Email belum digunakan akan masuk ke block ini            
 
-            // CREATE SALT PASSWORD
-            bcryptjs.genSalt(10, function(err, salt) {
-                // HASH PASSWORD DENGAN SALT HASIL GENERATED
-                bcryptjs.hash(req.body.password, salt, function(err, hash){
+            if (req.body.password === "") {
+                res.status(409).json({
+                    message: "Password tidak boleh kosong ...",
+                });                   
+            } else {
+                // CREATE SALT PASSWORD
 
-                    const data = {
-                        username : req.body.username,
-                        email : req.body.email,
-                        password : hash,
-                        fullname : req.body.fullname,
-                        bio : req.body.bio,
-                        pic : req.body.pic,        
-                        createdBy: req.body.createdBy,
-                        updatedBy: req.body.updatedBy,
-                        isDeleted:req.body.isDeleted
-                    }
-                    User.create(data).then((result)=>{
-                        res.status(201).json({
-                            message: `Register user sukses ... ${salt}`,
-                        });
-                    }).catch((err)=> {
-                        res.status(500).json({
-                            message: "Something went wrong ...",
-                        });
-                    });   
+                bcryptjs.genSalt(10, function(err, salt) {
+
+                    // HASH PASSWORD DENGAN SALT HASIL GENERATED
+                    bcryptjs.hash(req.body.password, salt, function(err, hash){
+                        
+                        const data = {
+                            username : req.body.username,
+                            email : req.body.email,
+                            password : hash,
+                            fullname : req.body.fullname,
+                            bio : req.body.bio,
+                            pic : req.body.pic,        
+                            createdBy: req.body.createdBy,
+                            updatedBy: req.body.updatedBy,
+                            isDeleted:req.body.isDeleted
+                        }
+
+                        // Validasi data sebelum di save
+                        const schema = {
+                            username : {type:"string", min: 3, max: 100, optional: false },
+                            email : {type: "email", optional: false },
+                            password : {type: "string", optional: false }                      
+                        }    
+
+                        const v = new validator();
+                        const validateResult = v.validate(data, schema);
+
+                        if (validateResult !== true) {
+                            res.status(400).json({
+                                message: "Data yang akan disimpan tidak valid ...",
+                                error : validateResult
+                            });
+                        } else {
+                            User.create(data).then((result)=>{
+                                res.status(201).json({
+                                    message: `Register user sukses ... ${salt}`,
+                                });
+                            }).catch((err)=> {
+                                res.status(500).json({
+                                    message: "Something went wrong ...",
+                                });
+                            });  
+
+                        }
+                    });
                 });
-            });
+            }
         }
     }).catch(err => {
         res.status(500).json({
-            message: "Something went wrong ...",
+            message: "Something went wrong!",
         });
     });
 }
-
 
 function signin(req, res) {
     User.findOne({where:{email : req.body.email}}).then(user => {
