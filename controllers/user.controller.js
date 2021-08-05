@@ -13,7 +13,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const SALT = process.env.SALT;
 
 
-
 // --- SELECT ALL DATA ---------
 function index(req, res, next) {
     User.findAll().then((users)=>{
@@ -161,7 +160,7 @@ function signup(req, res, next) {
                             password : hash,
                             fullname : req.body.fullname,
                             bio : req.body.bio,
-                            pic : req.body.pic,        
+                            picture : req.body.picture,        
                             createdBy: req.body.createdBy,
                             updatedBy: req.body.updatedBy,
                             isDeleted:req.body.isDeleted
@@ -185,7 +184,7 @@ function signup(req, res, next) {
                         } else {
                             User.create(data).then((result)=>{
                                 res.status(201).json({
-                                    message: `Register user sukses ... ${salt}`,
+                                    message: `Register user sukses ...${hash}`,
                                 });
                             }).catch((err)=> {
                                 res.status(500).json({
@@ -217,6 +216,7 @@ function signin(req, res) {
             bcryptjs.compare(req.body.password, user.password, function(err, result){
                 if (result){
                     // Password cocok, selanjutnya generate token
+                    console.log(JWT_SECRET);
                     const token = jwt.sign({
                         email : user.email,
                         userid : user.id
@@ -262,7 +262,7 @@ function register(req, res, next) {
                 password : hash,
                 fullname : req.body.fullname,
                 bio : req.body.bio,
-                pic : req.body.pic,        
+                picture : req.body.picture,        
                 createdBy: req.body.createdBy,
                 updatedBy: req.body.updatedBy,
                 isDeleted:req.body.isDeleted

@@ -9,6 +9,7 @@ var logger = require('morgan');
 // =============================================================== BEGIN: SCRIPT REQUIRE ==
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var companyTypeRouter = require('./routes/companytypes');
 // =============================================================== END: SCRIPT REQUIRE ====
 
 
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // =============================================================== BEGIN: USER ROUTERS ==
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/companytype', companyTypeRouter);
 // =============================================================== END: USER ROUTERS ====
 
 
