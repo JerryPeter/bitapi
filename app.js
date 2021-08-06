@@ -9,7 +9,8 @@ var logger = require('morgan');
 // =============================================================== BEGIN: SCRIPT REQUIRE ==
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var companyTypeRouter = require('./routes/companytypes');
+var companyTypesRouter = require('./routes/companytypes');
+var appsRouter = require('./routes/apps');
 // =============================================================== END: SCRIPT REQUIRE ====
 
 
@@ -30,7 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // =============================================================== BEGIN: USER ROUTERS ==
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/companytype', companyTypeRouter);
+app.use('/companytypes', companyTypesRouter);
+app.use('/apps', appsRouter);
 // =============================================================== END: USER ROUTERS ====
 
 
