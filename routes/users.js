@@ -7,7 +7,7 @@ const authMiddleware = require('../middlewares/auth');
 
 router.get('/', userController.index);
 router.get('/:id', userController.show);
-router.post('/create', authMiddleware.auth,userController.create);
+router.post('/create', authMiddleware.auth, userController.create);
 router.patch('/:id', authMiddleware.auth, userController.update);
 router.delete('/:id', authMiddleware.auth, userController.destroy);
 

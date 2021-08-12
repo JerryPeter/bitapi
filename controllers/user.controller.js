@@ -251,10 +251,9 @@ function register(req, res, next) {
                 message: "Alamat Email sudah digunakan ...",
             });            
         } else {
-            // Jika Email belum digunakan        
+            // Jika Email belum digunakan   
             var salt = bcryptjs.genSaltSync(10);    
-            var hash = bcryptjs.hashSync(req.body.password, SALT);
-            console.log(`hash ${hash}`);
+            var hash = bcryptjs.hashSync(req.body.password, salt);
 
             const data = {
                 username : req.body.username,
