@@ -20,7 +20,6 @@ function auth(req, res, next) {
     } else {
         return res.status(401).json({
             message: "Invalid or Expired Token ...",
-            error : e
         }); 
     }
 
