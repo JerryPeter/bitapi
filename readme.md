@@ -2,7 +2,7 @@
 
 Script basic API untuk Sharing di BIT Development Team
 
-## Installation
+## Installation Awal
 
 Gunakan langkah berikut untuk installasi
 
